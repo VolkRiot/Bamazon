@@ -1,0 +1,23 @@
+{
+  "name": "sql_store",
+  "version": "0.5.0",
+  "description": "An introduction to SQL and mysql server",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VolkRiot/Bamazon.git"
+  },
+  "author": "mishkatronic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VolkRiot/Bamazon/issues"
+  },
+  "homepage": "https://github.com/VolkRiot/Bamazon#readme",
+  "dependencies": {
+    "inquirer": "^3.0.6",
+    "mysql": "^2.13.0"
+  }
+}
