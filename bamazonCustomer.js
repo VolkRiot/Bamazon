@@ -53,7 +53,7 @@ BamazonCustomer.prototype.buildTable = function (data) {
       }
     }
   }.bind(this));
-  
+
   var tableString = this.stringPad("| ID", "item_id")
       + this.stringPad("| Product Name", "product_name")
       + this.stringPad("| Department", "department_name")
