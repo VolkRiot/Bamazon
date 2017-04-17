@@ -38,7 +38,7 @@ BamazonCustomer.prototype.displayAll = function () {
 BamazonCustomer.prototype.buildTable = function (data) {
 
   // Discover the greatest length of each cell by row
-  var cellLengthArrays = {
+  this.cellLen = {
     item_id: 0,
     product_name: 0,
     department_name: 0,
@@ -47,19 +47,35 @@ BamazonCustomer.prototype.buildTable = function (data) {
   };
 
   data.forEach(function(item){
-    for (var prop in cellLengthArrays){
-      cellLengthArrays[prop] = Math.max(cellLengthArrays[prop], String(item[prop]).length);
+    for (var prop in this.cellLen){
+      if(this.cellLen.hasOwnProperty(prop))
+        this.cellLen[prop] = Math.max(this.cellLen[prop], String(item[prop]).length);
     }
-  });
+  }.bind(this));
 
-  console.log(cellLengthArrays);
+  var tableString = this.stringPad("| ID", "item_id")
+      + this.stringPad("| Product Name", "product_name")
+      + this.stringPad("| Department", "department_name")
+      + this.stringPad("| Price", "price")
+      + this.stringPad("| Quantity", "stock_quantity") + " |\n";
 
-  var tableString = "| Prod ID | Product Name | Department | Price | Quantity |\n";
   data.forEach(function (item) {
     tableString += "| " + item.item_id + " | " + item.product_name + " | " + item.department_name + " | " +
             item.price.toFixed(2) + " | " + item.stock_quantity + " |\n";
   });
   return tableString;
+};
+
+BamazonCustomer.prototype.stringPad = function (str, key) {
+  var string = String(str);
+  var stringLength = string.length;
+  var totalLength = parseInt(this.cellLen[key]);
+
+  if (stringLength > totalLength){
+    this.cellLen[key] = stringLength;
+    totalLength = this.cellLen[key];
+  }
+  return string + " ".repeat(parseInt(totalLength) - stringLength);
 };
 
 BamazonCustomer.prototype.endSession = function () {
