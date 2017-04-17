@@ -48,11 +48,12 @@ BamazonCustomer.prototype.buildTable = function (data) {
 
   data.forEach(function(item){
     for (var prop in this.cellLen){
-      if(this.cellLen.hasOwnProperty(prop))
-        this.cellLen[prop] = Math.max(this.cellLen[prop], String(item[prop]).length);
+      if(this.cellLen.hasOwnProperty(prop)){
+        this.cellLen[prop] = Math.max(parseInt(this.cellLen[prop]), (String(item[prop]).length + 3));
+      }
     }
   }.bind(this));
-
+  
   var tableString = this.stringPad("| ID", "item_id")
       + this.stringPad("| Product Name", "product_name")
       + this.stringPad("| Department", "department_name")
@@ -60,9 +61,13 @@ BamazonCustomer.prototype.buildTable = function (data) {
       + this.stringPad("| Quantity", "stock_quantity") + " |\n";
 
   data.forEach(function (item) {
-    tableString += "| " + item.item_id + " | " + item.product_name + " | " + item.department_name + " | " +
-            item.price.toFixed(2) + " | " + item.stock_quantity + " |\n";
-  });
+    tableString += this.stringPad("| " + item.item_id, "item_id") +
+        this.stringPad("| " + item.product_name, "product_name") +
+        this.stringPad("| " + item.department_name, "department_name") +
+        this.stringPad("| " + item.price.toFixed(2), "price") +
+        this.stringPad("| " + item.stock_quantity, "stock_quantity") +
+        " |\n";
+  }.bind(this));
   return tableString;
 };
 
@@ -73,7 +78,7 @@ BamazonCustomer.prototype.stringPad = function (str, key) {
 
   if (stringLength > totalLength){
     this.cellLen[key] = stringLength;
-    totalLength = this.cellLen[key];
+    totalLength = parseInt(this.cellLen[key]);
   }
   return string + " ".repeat(parseInt(totalLength) - stringLength);
 };
