@@ -61,12 +61,14 @@ BamazonCustomer.prototype.buildTable = function (data) {
       + this.stringPad("| Quantity", "stock_quantity") + " |\n";
 
   data.forEach(function (item) {
-    tableString += this.stringPad("| " + item.item_id, "item_id") +
-        this.stringPad("| " + item.product_name, "product_name") +
-        this.stringPad("| " + item.department_name, "department_name") +
-        this.stringPad("| " + item.price.toFixed(2), "price") +
-        this.stringPad("| " + item.stock_quantity, "stock_quantity") +
-        " |\n";
+    for(var prop in item){
+      if(item.hasOwnProperty(prop)){
+        tableString += this.stringPad("| " + item[prop], prop);
+      }else{
+        tableString += this.stringPad("| N/A", prop);
+      }
+    }
+    tableString += " |\n";
   }.bind(this));
   return tableString;
 };
