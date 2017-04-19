@@ -7,15 +7,10 @@ function Bamazon(){
   if(!(this instanceof Bamazon)){
     return new Bamazon();
   }
-
-  this.initDependencies();
-  this.establishConn();
-}
-
-Bamazon.prototype.initDependencies = function () {
   this.inquirer = require('inquirer');
   this.mysql = require('mysql');
-};
+  this.establishConn();
+}
 
 Bamazon.prototype.establishConn = function () {
   this.connection = this.mysql.createConnection({
@@ -31,7 +26,6 @@ Bamazon.prototype.establishConn = function () {
   });
   this.connection.connect(function(err){
     if(err) throw new Error("Could not establish connection: " + err);
-    this.displayAll();
   }.bind(this))
 };
 
