@@ -10,16 +10,35 @@ function BamazonCustomer() {
 
 BamazonCustomer.prototype = Object.create(Bamazon.prototype);
 
+BamazonCustomer.prototype.placeOrder = function (userInput) {
+  var query = "SELECT * FROM products WHERE ?";
+  this.connection.query(query, {item_id: userInput.item_id} ,function(err, resp) {
+    if(err) throw new Error("Did not work");
 
+    if(resp[0].stock_quantity < userInput.units){
+      console.log('Insufficient quantity!');
+    }else if(resp[0].stock_quantity >= userInput.units){
+      var new_stock = resp[0].stock_quantity - userInput.units;
+      var update = "UPDATE products SET stock_quantity = ? WHERE item_id = ?";
+      this.connection.query(update, [new_stock ,resp[0].item_id], function (err) {
+        if (err) throw new Error("Update failed, couldn't purchase");
+        var string = "Purchase completed\nTotal: $" + parseFloat(resp[0].price) * parseInt(userInput.units);
+        console.log(string);
+      })
+    }
+
+
+  }.bind(this));
+
+};
 
 // Begin Run Logic
 var customer = new BamazonCustomer();
 
-// displayAlltoPrompt (inquirerPromptArray, responseCallback)
 customer.displayAlltoPrompt([
   {
     type: 'input',
-    name: 'numSelect',
+    name: 'item_id',
     message: 'Input the number for the ID of the product you wish ' +
     'to order',
     validate: function (value) {
@@ -31,4 +50,4 @@ customer.displayAlltoPrompt([
     name: 'units',
     message: "How many units would you like to order?"
   }
-], console.log);
+], customer.placeOrder.bind(customer));

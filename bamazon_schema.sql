@@ -22,3 +22,4 @@ VALUES
 ("Dunder Mifflin Copy Paper", "Office Supplies", 10.50, 3500),
 ("Serenity", "Personal Transportation", 150000.00, 1),
 ("Sabor De Soledad Chips", "Foods", 3.50, 250)
+

@@ -5,21 +5,17 @@ module.exports = Bamazon;
 function Bamazon(){
   this.inquirer = require('inquirer');
   this.mysql = require('mysql');
+  this.connection = this.mysql.createConnection({
+    host: "localhost",
+    port: 3306,
+    user: "root",
+    password: "",
+    database: "Bamazon"
+  });
   this.establishConn();
 }
 
 Bamazon.prototype.establishConn = function () {
-  this.connection = this.mysql.createConnection({
-    host: "localhost",
-    port: 3306,
-
-    // Your username
-    user: "root",
-
-    // Your password
-    password: "",
-    database: "Bamazon"
-  });
   this.connection.connect(function(err){
     if(err) throw new Error("Could not establish connection: " + err);
   }.bind(this))
