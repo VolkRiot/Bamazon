@@ -44,9 +44,9 @@ BamazonCustomer.prototype.placeOrder = function (userInput) {
       this.displayAlltoPrompt(this.prompt, this.placeOrder.bind(this));
     }
 
-    if(resp[0].stock_quantity < userInput.units){
+    if((resp[0].stock_quantity < userInput.units) || (resp[0].stock_quantity < 1)){
       console.log('Insufficient quantity!');
-
+      this.displayAlltoPrompt(this.prompt, this.placeOrder.bind(this));
     }else if(resp[0].stock_quantity >= userInput.units){
 
       var new_stock = resp[0].stock_quantity - userInput.units;
