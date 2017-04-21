@@ -74,7 +74,8 @@ BamazonCustomer.prototype.placeOrder = function (userInput) {
             if(err) throw new Error("Could not update the total sales!");
             var string = "Purchase completed\nTotal: $" + cost;
             console.log(string);
-          })
+            this.displayAlltoPrompt(this.prompt, this.placeOrder.bind(this));
+          }.bind(this))
 
         }.bind(this));
       }.bind(this))
