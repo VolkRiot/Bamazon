@@ -50,6 +50,7 @@ BamazonCustomer.prototype.placeOrder = function (userInput) {
 
       var new_stock = resp[0].stock_quantity - userInput.units;
       var update = "UPDATE products SET stock_quantity = ? WHERE item_id = ?";
+      var cost = parseFloat(resp[0].price, 2) * parseInt(userInput.units);
 
       this.connection.query(update, [new_stock ,resp[0].item_id], function (err) {
 
@@ -62,7 +63,12 @@ BamazonCustomer.prototype.placeOrder = function (userInput) {
           this.displayAlltoPrompt(this.prompt, this.placeOrder.bind(this));
         }
 
-        var string = "Purchase completed\nTotal: $" + parseFloat(resp[0].price, 2) * parseInt(userInput.units);
+        var query = "SELECT product_sales FROM products WHERE item_id = ?";
+        this.connection.query(query, [resp[0].item_id], function (err, resp) {
+          console.log(resp);
+        });
+
+        var string = "Purchase completed\nTotal: $" + cost;
         console.log(string);
       }.bind(this))
     }

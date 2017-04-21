@@ -7,6 +7,7 @@ product_name VARCHAR(100) NOT NULL,
 department_name VARCHAR(100) NOT NULL,
 price DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
 stock_quantity INTEGER(12) NOT NULL DEFAULT 0,
+product_sales DECIMAL(10, 2) NOT NULL DEFAULT 0,
 PRIMARY KEY(item_id)
 );
 
@@ -21,5 +22,13 @@ VALUES
 ("Brawndo", "Garden Supplies", 6.99, 1200),
 ("Dunder Mifflin Copy Paper", "Office Supplies", 10.50, 3500),
 ("Serenity", "Personal Transportation", 150000.00, 1),
-("Sabor De Soledad Chips", "Foods", 3.50, 250)
+("Sabor De Soledad Chips", "Foods", 3.50, 250);
 
+USE Bamazon;
+CREATE TABLE departments(
+department_id INTEGER(11) AUTO_INCREMENT NOT NULL,
+department_name VARCHAR(100) NOT NULL,
+over_head_costs INTEGER(11) NOT NULL DEFAULT 0,
+total_sales DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+PRIMARY KEY (department_id)
+);

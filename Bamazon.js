@@ -41,13 +41,10 @@ Bamazon.prototype.promptUser = function (prompt){
 Bamazon.prototype.buildTable = function (data) {
   // Discover the greatest length of each cell by row
   if(!this.cellLen){
-    this.cellLen = {
-      item_id: 0,
-      product_name: 0,
-      department_name: 0,
-      price: 0,
-      stock_quantity: 0
-    };
+    this.cellLen = {};
+    Object.keys(data[0]).forEach(function (key) {
+      this.cellLen[key] = 0;
+    }, this)
   }
 
   data.forEach(function(item){
@@ -62,7 +59,9 @@ Bamazon.prototype.buildTable = function (data) {
       + this.stringPad("| Product Name", "product_name")
       + this.stringPad("| Department", "department_name")
       + this.stringPad("| Price", "price")
-      + this.stringPad("| Quantity", "stock_quantity") + " |\n";
+      + this.stringPad("| Quantity", "stock_quantity")
+      + this.stringPad("| Total Sales", "product_sales")
+      + " |\n";
 
   data.forEach(function (item) {
     for(var prop in item){
@@ -85,6 +84,7 @@ Bamazon.prototype.stringPad = function (str, key) {
   if (stringLength > totalLength){
     this.cellLen[key] = stringLength;
     totalLength = parseInt(this.cellLen[key]);
+    return string + " ".repeat(parseInt(totalLength) - stringLength);
   }
   return string + " ".repeat(parseInt(totalLength) - stringLength);
 };
