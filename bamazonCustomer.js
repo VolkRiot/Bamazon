@@ -1,3 +1,5 @@
+'use strict';
+
 var Bamazon = require("./Bamazon.js");
 
 function BamazonCustomer() {

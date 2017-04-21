@@ -1,0 +1,120 @@
+'use strict';
+
+var Bamazon = require("./Bamazon.js");
+
+function BamazonManager() {
+  if(!(this instanceof BamazonManager)){
+    return new BamazonManager();
+  }
+  Bamazon.call(this);
+}
+
+BamazonManager.prototype = Object.create(Bamazon.prototype);
+
+BamazonManager.prototype.showLowInv = function () {
+  var query = "SELECT * FROM products WHERE stock_quantity <= ?";
+  this.connection.query(query, [45], function (err, resp) {
+    console.log(this.buildTable(resp));
+    this.promptChoice(this.prompt);
+  }.bind(this))
+};
+
+BamazonManager.prototype.addtoInventory = function () {
+  var itemLength = this.fullData.length;
+  var prompt = [{
+    name: 'id',
+    type: 'input',
+    message: 'Input the number of the ID of the product, for which you wish to update ' +
+        'the inventory.',
+    validate: function (value) {
+      return value >= 1 && value <= itemLength;
+    } 
+    },
+    {
+    name:'quantity',
+    type: 'input',
+    message: 'How much are you adding into the inventory?',
+    validate: function(input) {
+      return /^[0-9]+/.test(input);
+    }
+  }];
+
+  this.promptUser(prompt).then(function (response) {
+      this.connection.query("SELECT * FROM products", function(err, resp) {
+        this.fullData = resp;
+
+        var newQuant = parseInt(response.quantity);
+
+        var query = "UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ?";
+        this.connection.query(query, [newQuant, response.id], function (err, resp) {
+          try{
+            if(err){
+              throw new Error("Update failed, couldn't update quantity");
+            }
+          }catch(e){
+            console.log(e);
+            this.promptChoice();
+          }
+
+          var message = "Update completed successfully";
+          console.log(message);
+          this.promptChoice(this.prompt);
+
+        }.bind(this))
+      }.bind(this));
+  }.bind(this))
+};
+
+BamazonManager.prototype.promptChoice = function (prompt) {
+  this.promptUser(prompt).then(function(response){
+
+    this.connection.query("SELECT * FROM products", function(err, resp) {
+      this.fullData = resp;
+
+      switch(response.action){
+        case "View Products for Sale":
+          this.displayAlltoPrompt();
+
+          // TODO: Needs a fix here
+
+          this.promptChoice(this.prompt);
+          break;
+
+        case "View Low Inventory":
+          this.showLowInv();
+          break;
+
+        case "Add to Inventory":
+          this.addtoInventory();
+          break;
+
+        case "Add New Product":
+
+          break;
+
+        case "Quit":
+          console.log("GoodBye!");
+          this.endSession();
+          process.exit();
+      }
+
+    }.bind(this));
+  }.bind(this))
+};
+
+
+
+
+// Run Logic
+var manager = new BamazonManager();
+
+manager.prompt = [
+  {
+    type:'list',
+    name: 'action',
+    message: 'Select an action from the following options',
+    choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Quit"]
+  }
+];
+
+manager.promptChoice(manager.prompt);

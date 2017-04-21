@@ -26,9 +26,11 @@ Bamazon.prototype.displayAlltoPrompt = function (prompt, callback) {
   this.connection.query(query, function(err, resp) {
     console.log(this.buildTable(resp));
     this.response = resp;
-    this.promptUser(prompt).then(function (response) {
-      callback(response);
-    });
+    if (prompt){
+      this.promptUser(prompt).then(function (response) {
+        callback(response);
+      });
+    }
   }.bind(this))
 };
 
@@ -57,7 +59,7 @@ Bamazon.prototype.buildTable = function (data) {
     }
   }.bind(this));
 
-  var tableString = this.stringPad("| ID", "item_id")
+  var tableString = "\n" + this.stringPad("| ID", "item_id")
       + this.stringPad("| Product Name", "product_name")
       + this.stringPad("| Department", "department_name")
       + this.stringPad("| Price", "price")
