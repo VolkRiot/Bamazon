@@ -32,8 +32,9 @@ function BamazonCustomer() {
 BamazonCustomer.prototype = Object.create(Bamazon.prototype);
 
 BamazonCustomer.prototype.placeOrder = function (userInput) {
+  var itemID = userInput.item_id;
   var query = "SELECT * FROM products WHERE ?";
-  this.connection.query(query, {item_id: userInput.item_id} ,function(err, resp) {
+  this.connection.query(query, {item_id: itemID} ,function(err, resp) {
     try{
       if(err){
         throw new Error("Select all did not work: " + err);
@@ -65,11 +66,17 @@ BamazonCustomer.prototype.placeOrder = function (userInput) {
 
         var query = "SELECT product_sales FROM products WHERE item_id = ?";
         this.connection.query(query, [resp[0].item_id], function (err, resp) {
-          console.log(resp);
-        });
+          var currentSales = parseFloat(resp[0].product_sales);
+          var newTotal = currentSales + cost;
 
-        var string = "Purchase completed\nTotal: $" + cost;
-        console.log(string);
+          query = "UPDATE products SET product_sales = ? WHERE item_id = ?";
+          this.connection.query(query, [newTotal, itemID], function (err) {
+            if(err) throw new Error("Could not update the total sales!");
+            var string = "Purchase completed\nTotal: $" + cost;
+            console.log(string);
+          })
+
+        }.bind(this));
       }.bind(this))
     }
 
