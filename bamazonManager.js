@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var Bamazon = require("./Bamazon.js");
 
@@ -16,7 +16,7 @@ BamazonManager.prototype.showLowInv = function () {
   this.connection.query(query, [45], function (err, resp) {
     console.log(this.buildTable(resp));
     this.promptChoice(this.prompt);
-  }.bind(this))
+  }.bind(this));
 };
 
 BamazonManager.prototype.addtoInventory = function () {
@@ -157,9 +157,6 @@ BamazonManager.prototype.promptChoice = function (prompt) {
     }.bind(this));
   }.bind(this))
 };
-
-
-
 
 // Run Logic
 var manager = new BamazonManager();

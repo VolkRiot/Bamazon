@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 module.exports = Bamazon;
 
@@ -40,7 +40,6 @@ Bamazon.prototype.promptUser = function (prompt){
 
 Bamazon.prototype.buildTable = function (data) {
   // Discover the greatest length of each cell by row
-  
   if(!this.cellLen){
     this.cellLen = {
       item_id: 0,
