@@ -71,51 +71,103 @@ BamazonManager.prototype.addItem = function () {
     if(err) throw new Error("Couldn't retriever SQL Data: " + err);
     this.fullData = resp;
 
-    if(!this.departList){
+
+    this.connection.query("SELECT department_name FROM departments", function (err, resp) {
+      if(err) throw new Error("Could not check available departments");
+
       this.departList = [];
-     this.fullData.forEach(function(item){
-       this.departList.push(item.department_name);
-     }, this)
-    }
+      resp.forEach(function(item){
+          this.departList.push(item.department_name);
+        }, this);
+      
+      var buildItemPrompt = [{
+        name: 'product_name',
+        type: 'input',
+        message: 'Input the name of the new product'
+      }, {
+        name: 'department_name',
+        type: 'list',
+        message: 'Select the department',
+        choices: this.departList
+      }, {
+        name: 'price',
+        type: 'input',
+        message: 'What is the price of the new product?',
+        validate: function(input) {
+          return /^\d+\.?\d{1,2}/.test(input);
+        }
+      }, {
+        name:'stock_quantity',
+        type: 'input',
+        message: 'What is the initial stock quantity?',
+        validate: function(input) {
+          return /^\d+$/.test(input);
+        }
+      }];
 
-    var buildItemPrompt = [{
-      name: 'product_name',
-      type: 'input',
-      message: 'Input the name of the new product'
-    }, {
-      name: 'department_name',
-      type: 'list',
-      message: 'Select the department',
-      choices: this.departList
-    }, {
-      name: 'price',
-      type: 'input',
-      message: 'What is the price of the new product?',
-      validate: function(input) {
-        return /^\d+\.?\d{1,2}/.test(input);
-      }
-    }, {
-      name:'stock_quantity',
-      type: 'input',
-      message: 'What is the initial stock quantity?',
-      validate: function(input) {
-        return /^\d+$/.test(input);
-      }
-    }];
+      this.promptUser(buildItemPrompt).then(function (response) {
+        var query = "INSERT INTO products SET ?";
+        this.connection.query(query,{
+          product_name: response.product_name,
+          department_name: response.department_name,
+          price: parseFloat(response.price),
+          stock_quantity: response.stock_quantity
+        },function (err) {
+          if(err) throw new Error("Could not add a new item to the table: " + err);
+          console.log("New item added!");
+          this.promptChoice();
+        }.bind(this));
+      }.bind(this))
+    }.bind(this));
 
-    this.promptUser(buildItemPrompt).then(function (response) {
-      var query = "INSERT INTO products SET ?";
-      this.connection.query(query,{
-        product_name: response.product_name,
-        department_name: response.department_name,
-        price: parseFloat(response.price),
-        stock_quantity: response.stock_quantity
-      },function (err, resp) {
-        if(err) throw new Error("Could not add a new item to the table: " + err);
-        console.log("New item added!");
-        this.promptChoice();
-      }.bind(this));
-    }.bind(this))
+
+    // if(!this.departList){
+    //   this.departList = [];
+    //  this.fullData.forEach(function(item){
+    //    this.departList.push(item.department_name);
+    //  }, this)
+    // }
+    //
+    // var buildItemPrompt = [{
+    //   name: 'product_name',
+    //   type: 'input',
+    //   message: 'Input the name of the new product'
+    // }, {
+    //   name: 'department_name',
+    //   type: 'list',
+    //   message: 'Select the department',
+    //   choices: this.departList
+    // }, {
+    //   name: 'price',
+    //   type: 'input',
+    //   message: 'What is the price of the new product?',
+    //   validate: function(input) {
+    //     return /^\d+\.?\d{1,2}/.test(input);
+    //   }
+    // }, {
+    //   name:'stock_quantity',
+    //   type: 'input',
+    //   message: 'What is the initial stock quantity?',
+    //   validate: function(input) {
+    //     return /^\d+$/.test(input);
+    //   }
+    // }];
+    //
+    // this.promptUser(buildItemPrompt).then(function (response) {
+    //   var query = "INSERT INTO products SET ?";
+    //   this.connection.query(query,{
+    //     product_name: response.product_name,
+    //     department_name: response.department_name,
+    //     price: parseFloat(response.price),
+    //     stock_quantity: response.stock_quantity
+    //   },function (err) {
+    //     if(err) throw new Error("Could not add a new item to the table: " + err);
+    //     console.log("New item added!");
+    //     this.promptChoice();
+    //   }.bind(this));
+    // }.bind(this))
+
+
 
   }.bind(this));
 };
