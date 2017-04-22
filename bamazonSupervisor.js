@@ -19,12 +19,17 @@ function BamazonSupervisor() {
 
 BamazonSupervisor.prototype =  Object.create(Bamazon.prototype);
 
+BamazonSupervisor.prototype.viewSalesbyDept = function (){
+  var query = "SELECT product_sales FROM products  ";
+  this.connection.query()
+};
+
 BamazonSupervisor.prototype.promptChoose = function () {
   this.promptUser(this.prompt).then(function (response) {
     switch(response.choice){
 
       case 'View Product Sales by Department':
-        
+
         break;
 
       case 'Create New Department':

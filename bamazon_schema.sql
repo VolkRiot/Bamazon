@@ -32,3 +32,14 @@ over_head_costs INTEGER(11) NOT NULL DEFAULT 0,
 total_sales DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
 PRIMARY KEY (department_id)
 );
+
+USE Bamazon;
+INSERT INTO departments(department_name)
+VALUES
+("Personal Transportation"),
+("Alien Goods"),
+("Foods"),
+("Home Appliances"),
+("Health and Beauty"),
+("Garden Supplies"),
+("Office Supplies");

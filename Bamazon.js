@@ -60,7 +60,7 @@ Bamazon.prototype.buildTable = function (data) {
       + this.stringPad("| Department", "department_name")
       + this.stringPad("| Price", "price")
       + this.stringPad("| Quantity", "stock_quantity")
-      + this.stringPad("| Total Sales", "product_sales")
+      + this.stringPad("| Product Sales", "product_sales")
       + " |\n";
 
   data.forEach(function (item) {

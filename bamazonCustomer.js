@@ -64,17 +64,22 @@ BamazonCustomer.prototype.placeOrder = function (userInput) {
           this.displayAlltoPrompt(this.prompt, this.placeOrder.bind(this));
         }
 
-        var query = "SELECT product_sales FROM products WHERE item_id = ?";
+        var query = "SELECT product_sales, department_name FROM products WHERE item_id = ?";
         this.connection.query(query, [resp[0].item_id], function (err, resp) {
           var currentSales = parseFloat(resp[0].product_sales);
+          var department = resp[0].department_name;
           var newTotal = currentSales + cost;
 
           query = "UPDATE products SET product_sales = ? WHERE item_id = ?";
           this.connection.query(query, [newTotal, itemID], function (err) {
             if(err) throw new Error("Could not update the total sales!");
-            var string = "Purchase completed\nTotal: $" + cost;
+            var string = "Purchase completed\nTotal: $" + cost.toFixed(2);
             console.log(string);
-            this.displayAlltoPrompt(this.prompt, this.placeOrder.bind(this));
+            query = "UPDATE departments SET total_sales = ? WHERE department_name = ?";
+            this.connection.query(query, [newTotal, department], function (err, resp) {
+              if(err) throw new Error("Could not update the department table " + err);
+              this.displayAlltoPrompt(this.prompt, this.placeOrder.bind(this));
+            }.bind(this));
           }.bind(this))
 
         }.bind(this));
