@@ -20,8 +20,13 @@ function BamazonSupervisor() {
 BamazonSupervisor.prototype =  Object.create(Bamazon.prototype);
 
 BamazonSupervisor.prototype.viewSalesbyDept = function (){
-  var query = "SELECT product_sales FROM products  ";
-  this.connection.query()
+  var query = "SELECT products.department_name, product_sales " +
+      "FROM products INNER JOIN departments WHERE products.department_name = departments.department_name";
+  this.connection.query(query, function (err, resp) {
+    if(err) throw new Error("Could not get table data" + err);
+    console.log(this.buildTable(resp));
+    this.promptChoose();
+  }.bind(this));
 };
 
 BamazonSupervisor.prototype.promptChoose = function () {
@@ -29,7 +34,7 @@ BamazonSupervisor.prototype.promptChoose = function () {
     switch(response.choice){
 
       case 'View Product Sales by Department':
-
+        this.viewSalesbyDept();
         break;
 
       case 'Create New Department':
@@ -42,10 +47,10 @@ BamazonSupervisor.prototype.promptChoose = function () {
         process.exit();
         break;
     }
-  })
+  }.bind(this))
 };
 
 // Begin run logic
 
 var supervisor = BamazonSupervisor();
-//supervisor.promptUser(supervisor.prompt)
+supervisor.promptChoose();

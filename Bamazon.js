@@ -55,13 +55,11 @@ Bamazon.prototype.buildTable = function (data) {
     }
   }.bind(this));
 
-  var tableString = "\n" + this.stringPad("| ID", "item_id")
-      + this.stringPad("| Product Name", "product_name")
-      + this.stringPad("| Department", "department_name")
-      + this.stringPad("| Price", "price")
-      + this.stringPad("| Quantity", "stock_quantity")
-      + this.stringPad("| Product Sales", "product_sales")
-      + " |\n";
+  var tableString = "\n";
+  for(var prop in this.cellLen){
+    tableString += this.stringPad("| " + String(prop).toUpperCase(), String(prop))
+  }
+  tableString+=" |\n";
 
   data.forEach(function (item) {
     for(var prop in item){
