@@ -14,12 +14,14 @@ function BamazonSupervisor() {
     message: 'What would you like to do',
     choices: ['View Product Sales by Department', 'Create New Department', 'Quit']
   }];
+  this.promptChoose();
 
 }
 
 BamazonSupervisor.prototype =  Object.create(Bamazon.prototype);
 
 BamazonSupervisor.prototype.viewSalesbyDept = function (){
+  this.clearCLI();
   var query = "SELECT departments.department_id, " +
       "departments.department_name, " +
       "departments.over_head_costs, " +
@@ -30,9 +32,10 @@ BamazonSupervisor.prototype.viewSalesbyDept = function (){
       "( SELECT department_name, SUM(product_sales) AS total_sales FROM products GROUP BY department_name " +
       ") total_sales_by_dept WHERE " +
       "departments.department_name = total_sales_by_dept.department_name;";
-  
+
   this.connection.query(query, function(err, resp){
     if(err) throw new Error("Could not get total sales", err);
+    if(!this.salesTable) this.salesTable = this.buildTable(resp);
     console.log(this.buildTable(resp));
     this.promptChoose();
   }.bind(this));
@@ -66,4 +69,3 @@ BamazonSupervisor.prototype.promptChoose = function () {
 // Begin run logic
 
 var supervisor = BamazonSupervisor();
-supervisor.promptChoose();

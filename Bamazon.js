@@ -34,6 +34,10 @@ Bamazon.prototype.displayAlltoPrompt = function (prompt, callback) {
   }.bind(this))
 };
 
+Bamazon.prototype.clearCLI = function () {
+  process.stdout.write('\x1B[2J\x1B[0f');
+};
+
 Bamazon.prototype.promptUser = function (prompt){
   return this.inquirer.prompt(prompt);
 };
