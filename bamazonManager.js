@@ -7,6 +7,15 @@ function BamazonManager() {
     return new BamazonManager();
   }
   Bamazon.call(this);
+  this.prompt = [
+    {
+      type:'list',
+      name: 'action',
+      message: 'Select an action from the following options',
+      choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Quit"]
+    }
+  ];
+  this.promptChoice(this.prompt);
 }
 
 BamazonManager.prototype = Object.create(Bamazon.prototype);
@@ -133,6 +142,7 @@ BamazonManager.prototype.promptChoice = function (prompt) {
 
       switch(response.action){
         case "View Products for Sale":
+          this.clearCLI();
           this.displayAlltoPrompt();
 
           // TODO: Needs a fix here
@@ -141,6 +151,7 @@ BamazonManager.prototype.promptChoice = function (prompt) {
           break;
 
         case "View Low Inventory":
+          this.clearCLI();
           this.showLowInv();
           break;
 
@@ -149,6 +160,7 @@ BamazonManager.prototype.promptChoice = function (prompt) {
           break;
 
         case "Add New Product":
+          this.clearCLI();
           this.addItem();
           break;
 
@@ -163,15 +175,4 @@ BamazonManager.prototype.promptChoice = function (prompt) {
 };
 
 // Run Logic
-var manager = new BamazonManager();
-
-manager.prompt = [
-  {
-    type:'list',
-    name: 'action',
-    message: 'Select an action from the following options',
-    choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Quit"]
-  }
-];
-
-manager.promptChoice(manager.prompt);
+new BamazonManager();
