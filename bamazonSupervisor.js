@@ -20,20 +20,18 @@ function BamazonSupervisor() {
 BamazonSupervisor.prototype =  Object.create(Bamazon.prototype);
 
 BamazonSupervisor.prototype.viewSalesbyDept = function (){
-  var query = "SELECT products.department_name, SUM(product_sales) AS total_sales FROM " +
-      "products GROUP BY department_name";
+  var query = "SELECT departments.department_id, " +
+  "departments.department_name, " +
+          "departments.over_head_costs, " +
+      "total_sales_by_dept.total_sales, " +
+  "total_sales_by_dept.total_sales -  departments.over_head_costs " +
+  "AS total_profits " +
+  "FROM departments INNER JOIN " +
+  "( SELECT department_name, SUM(product_sales) AS total_sales FROM products GROUP BY department_name " +
+  ") total_sales_by_dept WHERE " +
+  "departments.department_name = total_sales_by_dept.department_name;";
   this.connection.query(query, function(err, resp){
     if(err) throw new Error("Could not get total sales" + err);
-    console.log(resp);
-
-
-
-  }.bind(this));
-
-  query = "SELECT products.department_name, product_sales " +
-      "FROM products INNER JOIN departments WHERE products.department_name = departments.department_name";
-  this.connection.query(query, function (err, resp) {
-    if(err) throw new Error("Could not get table data" + err);
     console.log(this.buildTable(resp));
     this.promptChoose();
   }.bind(this));
