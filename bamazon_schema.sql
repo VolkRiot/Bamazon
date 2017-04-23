@@ -30,7 +30,6 @@ department_id INTEGER(11) AUTO_INCREMENT NOT NULL,
 department_name VARCHAR(100) NOT NULL,
 over_head_costs INTEGER(11) NOT NULL DEFAULT 0,
 total_sales DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-total_profit DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
 PRIMARY KEY (department_id)
 );
 
