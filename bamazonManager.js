@@ -14,6 +14,7 @@ BamazonManager.prototype = Object.create(Bamazon.prototype);
 BamazonManager.prototype.showLowInv = function () {
   var query = "SELECT * FROM products WHERE stock_quantity <= ?";
   this.connection.query(query, [45], function (err, resp) {
+    if(err) throw new Error("Could not retrieve low stock table ", err);
     console.log(this.buildTable(resp));
     this.promptChoice(this.prompt);
   }.bind(this));
@@ -46,10 +47,10 @@ BamazonManager.prototype.addtoInventory = function () {
         var newQuant = parseInt(response.quantity);
 
         var query = "UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ?";
-        this.connection.query(query, [newQuant, response.id], function (err, resp) {
+        this.connection.query(query, [newQuant, response.id], function (err) {
           try{
             if(err){
-              throw new Error("Update failed, couldn't update quantity");
+              throw new Error("Update failed, couldn't update quantity. ", err);
             }
           }catch(e){
             console.log(e);
@@ -68,12 +69,12 @@ BamazonManager.prototype.addtoInventory = function () {
 
 BamazonManager.prototype.addItem = function () {
   this.connection.query("SELECT * FROM products", function(err, resp) {
-    if(err) throw new Error("Couldn't retriever SQL Data: " + err);
+    if(err) throw new Error("Couldn't retriever SQL Data: ", err);
     this.fullData = resp;
 
 
     this.connection.query("SELECT department_name FROM departments", function (err, resp) {
-      if(err) throw new Error("Could not check available departments");
+      if(err) throw new Error("Could not check available departments. ", err);
 
       this.departList = [];
       resp.forEach(function(item){
@@ -113,7 +114,7 @@ BamazonManager.prototype.addItem = function () {
           price: parseFloat(response.price),
           stock_quantity: response.stock_quantity
         },function (err) {
-          if(err) throw new Error("Could not add a new item to the table: " + err);
+          if(err) throw new Error("Could not add a new item to the table: ", err);
           console.log("New item added!");
           this.promptChoice();
         }.bind(this));
@@ -127,6 +128,7 @@ BamazonManager.prototype.promptChoice = function (prompt) {
   this.promptUser(this.prompt).then(function(response){
 
     this.connection.query("SELECT * FROM products", function(err, resp) {
+      if(err) throw new Error("Pulling products failed", err);
       this.fullData = resp;
 
       switch(response.action){

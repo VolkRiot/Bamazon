@@ -17,7 +17,7 @@ function Bamazon(){
 
 Bamazon.prototype.establishConn = function () {
   this.connection.connect(function(err){
-    if(err) throw new Error("Could not establish connection: " + err);
+    if(err) throw new Error("Could not establish connection: ", err);
   }.bind(this))
 };
 

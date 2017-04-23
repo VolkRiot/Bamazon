@@ -37,7 +37,7 @@ BamazonCustomer.prototype.placeOrder = function (userInput) {
   this.connection.query(query, {item_id: itemID} ,function(err, resp) {
     try{
       if(err){
-        throw new Error("Select all did not work: " + err);
+        throw new Error("Select all did not work: ", err);
       }
     }catch(e){
       console.log(e);
@@ -57,7 +57,7 @@ BamazonCustomer.prototype.placeOrder = function (userInput) {
 
         try{
           if(err){
-            throw new Error("Update failed, couldn't purchase");
+            throw new Error("Update failed, couldn't purchase", err);
           }
         }catch(e){
           console.log(e);
@@ -72,12 +72,12 @@ BamazonCustomer.prototype.placeOrder = function (userInput) {
 
           query = "UPDATE products SET product_sales = ? WHERE item_id = ?";
           this.connection.query(query, [newTotal, itemID], function (err) {
-            if(err) throw new Error("Could not update the total sales!");
+            if(err) throw new Error("Could not update the total sales!", err);
             var string = "Purchase completed\nTotal: $" + cost.toFixed(2);
             console.log(string);
             query = "UPDATE departments SET total_sales = ? WHERE department_name = ?";
-            this.connection.query(query, [newTotal, department], function (err, resp) {
-              if(err) throw new Error("Could not update the department table " + err);
+            this.connection.query(query, [newTotal, department], function (err) {
+              if(err) throw new Error("Could not update the department table ", err);
               this.displayAlltoPrompt(this.prompt, this.placeOrder.bind(this));
             }.bind(this));
           }.bind(this))
