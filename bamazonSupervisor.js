@@ -14,6 +14,17 @@ function BamazonSupervisor() {
     message: 'What would you like to do',
     choices: ['View Product Sales by Department', 'Create New Department', 'Quit']
   }];
+
+  this.insertPrompt = [{
+    type: 'input',
+    name: 'new_dept',
+    message: 'Enter the name of the new department you wish to create'
+  },{
+    type: 'input',
+    name: 'new_overhead',
+    message: 'What are your over heads for the new department?'
+  }];
+
   this.promptChoose();
 
 }
@@ -26,7 +37,7 @@ BamazonSupervisor.prototype.viewSalesbyDept = function (){
       "departments.department_name, " +
       "departments.over_head_costs, " +
       "total_sales_by_dept.total_sales, " +
-      "total_sales_by_dept.total_sales -  departments.over_head_costs " +
+      "total_sales_by_dept.total_sales - departments.over_head_costs " +
       "AS total_profits " +
       "FROM departments INNER JOIN " +
       "( SELECT department_name, SUM(product_sales) AS total_sales FROM products GROUP BY department_name " +
@@ -35,13 +46,24 @@ BamazonSupervisor.prototype.viewSalesbyDept = function (){
 
   this.connection.query(query, function(err, resp){
     if(err) throw new Error("Could not get total sales", err);
-    if(!this.salesTable) this.salesTable = this.buildTable(resp);
-    console.log(this.buildTable(resp));
+
+    this.salesTable = this.buildTable(resp);
+    console.log(this.salesTable);
     this.promptChoose();
+
   }.bind(this));
 };
 
 BamazonSupervisor.prototype.createnewDepart = function (){
+  this.clearCLI();
+  this.promptUser(this.insertPrompt).then(function(response){
+
+    var query = "INSERT INTO departments (department_name, over_head_costs) VALUES (?, ?)";
+    this.connection.query(query, [response.new_dept, response.new_overhead], function(err){
+      if(err) throw new Error("Failed to insert new value. ", err);
+      this.promptChoose();
+    }.bind(this))
+  }.bind(this))
 
 };
 
@@ -67,5 +89,4 @@ BamazonSupervisor.prototype.promptChoose = function () {
 };
 
 // Begin run logic
-
-var supervisor = BamazonSupervisor();
+BamazonSupervisor();
