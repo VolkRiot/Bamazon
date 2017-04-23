@@ -61,7 +61,7 @@ Bamazon.prototype.buildTable = function (data) {
 
   var tableString = "\n";
   for(var prop in this.cellLen){
-    tableString += this.stringPad("| " + String(prop).toUpperCase(), String(prop))
+    tableString += this.stringPad("| " + prop.toUpperCase(), prop)
   }
   tableString+=" |\n";
 
@@ -75,6 +75,7 @@ Bamazon.prototype.buildTable = function (data) {
     }
     tableString += " |\n";
   }.bind(this));
+
   return tableString;
 };
 
@@ -86,7 +87,6 @@ Bamazon.prototype.stringPad = function (str, key) {
   if (stringLength > totalLength){
     this.cellLen[key] = stringLength;
     totalLength = parseInt(this.cellLen[key]);
-    return string + " ".repeat(parseInt(totalLength) - stringLength);
   }
   return string + " ".repeat(parseInt(totalLength) - stringLength);
 };
