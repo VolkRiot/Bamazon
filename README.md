@@ -1,8 +1,5 @@
 # Bamazon
 
-## Initial Schema
-![Starter Schema](shotsOfApp/initSchema.png)
-
 ## Customer View
 ![Customer View](shotsOfApp/CustomerView1.png)
 
